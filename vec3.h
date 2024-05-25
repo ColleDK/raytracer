@@ -51,9 +51,12 @@ public:
 
     // Utility functions
     [[nodiscard]] double length() const {
-        return sqrt(x() * x() + y() * y() + z() * z());
+        return sqrt(lengthSquared());
     }
 
+    [[nodiscard]] double lengthSquared() const {
+        return x() * x() + y() * y() + z() * z();
+    }
 
 };
 
