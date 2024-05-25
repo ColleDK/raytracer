@@ -79,6 +79,10 @@ inline Vec3 operator*(const Vec3& vec, const double t) {
     return {vec.x() * t, vec.y() * t, vec.z() * t};
 }
 
+inline Vec3 operator*(const double t, const Vec3& vec) {
+    return {vec.x() * t, vec.y() * t, vec.z() * t};
+}
+
 inline Vec3 operator/(const Vec3& vec, const double t) {
     return vec * (1/t);
 }
