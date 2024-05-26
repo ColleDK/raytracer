@@ -8,4 +8,7 @@ set(SOURCE_FILES main.cpp)
 add_executable(raytracer main.cpp vec3.h
         color.h
         ray.h
-        shapes/sphere.h)
+        shapes/sphere.h
+        hittable.h
+        hittablelist.h
+        common.h)

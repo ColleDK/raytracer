@@ -1,30 +1,16 @@
-#include <iostream>
-#include "color.h"
-#include "ray.h"
-#include "vec3.h"
+#include "common.h"
 #include "shapes/sphere.h"
+#include "hittable.h"
+#include "hittablelist.h"
 
-double hitSphere(const Sphere& sphere, const Ray& ray) {
-    const Vec3 oc = sphere.center() - ray.origin();
-    const auto a = ray.direction().lengthSquared();
-    const auto h = dotProduct(ray.direction(), oc);
-    const auto c = oc.lengthSquared() - sphere.radius() * sphere.radius();
-
-    const auto discriminant = h * h - a * c;
-    if (discriminant < 0) {
-        return -1.0;
-    }
-    return (h - sqrt(discriminant)) / a;
-}
-
-Color rayColor(const Sphere& sphere, const Ray& ray) {
-    if (const auto t = hitSphere(sphere, ray); t > 0.0) {
-        auto normal = unitVector(ray.at(t) - Vec3(0, 0, -1));
-        normal += Vec3(1.0, 1.0, 1.0);
-        return 0.5 * normal;
-    }
+Color rayColor(const Ray& ray, const Hittable& world) {
     const auto blue = Vec3(0.5, 0.7, 1.0);
     const auto white = Vec3(1.0, 1.0, 1.0);
+
+    HitRecord record{};
+    if (world.hasHit(ray, 0, infinity, record)) {
+        return 0.5 * (record.normal + white);
+    }
 
     const auto unitDirection = unitVector(ray.direction());
     const auto a = 0.5 * (unitDirection.y() + 1.0);
@@ -39,6 +25,11 @@ int main() {
     constexpr auto aspectRatio = 16.0 / 9.0;
     constexpr int imageWidth = 400;
     constexpr int imageHeight =static_cast<int>(imageWidth / aspectRatio);
+
+    // World
+    HittableList world;
+    world.add(make_shared<Sphere>(Vec3(0, 0, -1), 0.5));
+    world.add(make_shared<Sphere>(Vec3(0, -100.5, -1), 100));
 
     // Camera
     constexpr auto focalLength = 1.0;
@@ -63,12 +54,11 @@ int main() {
     for (int i = 0; i < imageHeight; ++i) {
         std::clog << "\rScanlines remaining: " << (imageHeight - i) << ' ' << std::flush;
         for (int j = 0; j < imageWidth; ++j) {
-            //auto pixelColor = Color(static_cast<double>(j) / (imageWidth - 1), static_cast<double>(i) / (imageHeight - 1), 0);
             auto pixelCenter = pixelLocation + (j * pixelU) + (i * pixelV);
             auto rayDirection = pixelCenter - cameraCenter;
             Ray ray(cameraCenter, rayDirection);
 
-            auto pixelColor = rayColor(sphere, ray);
+            auto pixelColor = rayColor(ray, world);
             writeColor(std::cout, pixelColor);
         }
     }
