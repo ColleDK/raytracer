@@ -8,7 +8,7 @@ Color rayColor(const Ray& ray, const Hittable& world) {
     const auto white = Vec3(1.0, 1.0, 1.0);
 
     HitRecord record{};
-    if (world.hasHit(ray, 0, infinity, record)) {
+    if (world.hasHit(ray, Interval(0, infinity), record)) {
         return 0.5 * (record.normal + white);
     }
 

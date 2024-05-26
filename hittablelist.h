@@ -19,13 +19,13 @@ public:
         objects.push_back(object);
     }
 
-    bool hasHit(const Ray &ray, const double tMin, const double tMax, HitRecord &record) const override {
+    bool hasHit(const Ray &ray, Interval tInterval, HitRecord &record) const override {
         HitRecord tempRecord;
         bool hitAny = false;
-        auto shortestDistance = tMax;
+        auto shortestDistance = tInterval.max;
 
         for (const auto& object: objects) {
-            if (object->hasHit(ray, tMin, shortestDistance, tempRecord)) {
+            if (object->hasHit(ray, Interval(tInterval.min, shortestDistance), tempRecord)) {
                 hitAny = true;
                 shortestDistance = tempRecord.t;
                 record = tempRecord;

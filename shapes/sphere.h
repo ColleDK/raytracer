@@ -11,7 +11,7 @@ public:
     Sphere(const Vec3& center, const double radius): centerPos(center), r(radius) {}
 
     // Hittable functions
-    bool hasHit(const Ray &ray, const double tMin, const double tMax, HitRecord &record) const override {
+    bool hasHit(const Ray &ray, Interval tInterval, HitRecord &record) const override {
         const Vec3 oc = center() - ray.origin();
         const auto a = ray.direction().lengthSquared();
         const auto h = dotProduct(ray.direction(), oc);
@@ -26,9 +26,9 @@ public:
 
         // Find the nearest node that is within the acceptable range
         auto root = (h - sqrtd) / a;
-        if (root <= tMin || root >= tMax) {
+        if (!tInterval.surrounds(root)) {
             root = (h + sqrtd) / a;
-            if (root <= tMin || root >= tMax) {
+            if (!tInterval.surrounds(root)) {
                 return false;
             }
         }

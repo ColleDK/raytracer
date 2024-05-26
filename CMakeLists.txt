@@ -11,4 +11,5 @@ add_executable(raytracer main.cpp vec3.h
         shapes/sphere.h
         hittable.h
         hittablelist.h
-        common.h)
+        common.h
+        interval.h)

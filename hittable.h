@@ -19,7 +19,7 @@ class Hittable {
 public:
     virtual ~Hittable() = default;
 
-    [[nodiscard]] virtual bool hasHit(const Ray& ray, double tMin, double tMax, HitRecord& record) const = 0;
+    [[nodiscard]] virtual bool hasHit(const Ray& ray, Interval tInterval, HitRecord& record) const = 0;
 };
 
 #endif //HITTABLE_H
