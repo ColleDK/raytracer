@@ -55,6 +55,14 @@ public:
         return x() * x() + y() * y() + z() * z();
     }
 
+    static Vec3 random() {
+        return {randomDouble(), randomDouble(), randomDouble()};
+    }
+
+    static Vec3 random(const int min, const int max) {
+        return {randomDouble(min, max), randomDouble(min, max), randomDouble(min, max)};
+    }
+
 };
 
 // Additional utility functions
@@ -102,6 +110,26 @@ inline Vec3 crossProduct(const Vec3& vec1,const Vec3& vec2) {
 
 inline Vec3 unitVector(const Vec3& vec) {
     return vec / vec.length();
+}
+
+inline Vec3 randomInUnitSphere() {
+    while (true) {
+        if (auto point = Vec3::random(-1, 1); point.lengthSquared() < 1) {
+            return point;
+        }
+    }
+}
+
+inline Vec3 randomUnitVector() {
+    return unitVector(randomInUnitSphere());
+}
+
+inline Vec3 randomOnHemisphere(const Vec3& normal) {
+    const Vec3 onUnitSphere = randomUnitVector();
+    if (dotProduct(onUnitSphere, normal) > 0.0) {
+        return onUnitSphere;
+    }
+    return -onUnitSphere;
 }
 
 #endif //VEC3_H

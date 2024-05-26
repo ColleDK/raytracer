@@ -10,6 +10,7 @@ public:
     double aspectRatio = 16.0 / 9.0;
     int imageWidth = 400;
     int samplesPerPixel = 10;
+    int maxDepth = 10;
 
     void render(const Hittable& world) {
         initialize();
@@ -21,7 +22,7 @@ public:
                 Color pixelColor {};
                 for (int sample = 0; sample < samplesPerPixel; sample++) {
                     Ray ray = getRay(j, i);
-                    pixelColor += rayColor(ray, world);
+                    pixelColor += rayColor(ray, maxDepth, world);
                 }
                 writeColor(std::cout, pixelSampleScale * pixelColor);
             }
@@ -71,13 +72,19 @@ private:
         return {randomDouble() - 0.5, randomDouble() - 0.5, 0};
     }
 
-    [[nodiscard]] static Color rayColor(const Ray& ray, const Hittable& world) {
+    [[nodiscard]] static Color rayColor(const Ray& ray, const int depth, const Hittable& world) {
         const auto blue = Vec3(0.5, 0.7, 1.0);
         const auto white = Vec3(1.0, 1.0, 1.0);
+        const auto black = Vec3(0.0, 0.0, 0.0);
+
+        if (depth <= 0) {
+            return black;
+        }
 
         HitRecord record{};
-        if (world.hasHit(ray, Interval(0, infinity), record)) {
-            return 0.5 * (record.normal + white);
+        if (world.hasHit(ray, Interval(0.001, infinity), record)) {
+            auto direction = record.normal + randomUnitVector();
+            return 0.5 * rayColor({record.point, direction}, depth - 1, world);
         }
 
         const auto unitDirection = unitVector(ray.direction());
