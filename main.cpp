@@ -62,6 +62,6 @@ int main() {
             writeColor(std::cout, pixelColor);
         }
     }
-    std::clog << "\rDone.                 \n";
+    std::clog << "\rDone.\n";
     return 0;
 }
