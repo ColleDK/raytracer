@@ -5,6 +5,7 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <random>
 
 using std::make_shared;
 using std::shared_ptr;
@@ -15,9 +16,23 @@ const double infinity = std::numeric_limits<double>::infinity();
 constexpr double pi = 3.1415926535897932385;
 
 // Utility functions
-inline double degreeToRadian(double degrees) {
+inline double degreeToRadian(const double degrees) {
     return degrees * pi / 180.0;
 }
+
+inline double randomDouble() {
+    std::random_device rand;
+    std::seed_seq seed { rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand() };
+    std::mt19937 generator{ seed };
+
+    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    return distribution(generator);
+}
+
+inline double randomDouble(const double min, const double max) {
+    return min + (max - min) * randomDouble();
+}
+
 
 // Common headers
 #include "color.h"

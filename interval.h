@@ -22,6 +22,12 @@ public:
         return min < value && max > value;
     }
 
+    [[nodiscard]] double clamp(const double value) const {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
     static const Interval empty, universe;
 };
 

@@ -12,4 +12,5 @@ add_executable(raytracer main.cpp vec3.h
         hittable.h
         hittablelist.h
         common.h
-        interval.h)
+        interval.h
+        camera.h)
