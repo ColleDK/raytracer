@@ -8,10 +8,18 @@
 class Camera {
 
 public:
+    // Rendering values
     double aspectRatio = 16.0 / 9.0;
     int imageWidth = 400;
     int samplesPerPixel = 10;
     int maxDepth = 10;
+
+    // Camera values
+    double fov = 90;
+    Vec3 position {0, 0, 0};
+    Vec3 lookAt {0, 0, -1};
+    Vec3 upVector {0, 1, 0};
+
 
     void render(const Hittable& world) {
         initialize();
@@ -38,24 +46,31 @@ private:
     Vec3 pixelLocation {};
     Vec3 pixelU {};
     Vec3 pixelV {};
+    Vec3 u{}, v{}, w{};
 
     void initialize() {
         imageHeight = static_cast<int>(imageWidth / aspectRatio);
-        cameraCenter = {};
+        cameraCenter = position;
 
         pixelSampleScale = 1.0 / samplesPerPixel;
 
-        constexpr auto focalLength = 1.0;
-        constexpr auto viewportHeight = 2.0;
+        const auto focalLength = (position - lookAt).length();
+        const auto theta = degreeToRadian(fov);
+        const auto h = tan(theta / 2);
+        const auto viewportHeight = 2 * h * focalLength;
         const auto viewportWidth = viewportHeight * (static_cast<double>(imageWidth) / imageHeight);
 
-        const auto viewportU = Vec3(viewportWidth, 0, 0);
-        const auto viewportV = Vec3(0, -viewportHeight, 0);
+        w = unitVector(position - lookAt);
+        u = unitVector(crossProduct(upVector, w));
+        v = crossProduct(w, u);
+
+        const auto viewportU = viewportWidth * u;
+        const auto viewportV = viewportHeight * -v;
 
         pixelU = viewportU / imageWidth;
         pixelV = viewportV / imageHeight;
 
-        const auto viewportUpperLeft = cameraCenter - Vec3(0, 0, focalLength) - viewportU / 2 - viewportV / 2;
+        const auto viewportUpperLeft = cameraCenter - (focalLength * w) - viewportU / 2 - viewportV / 2;
         pixelLocation = viewportUpperLeft + 0.5 * (pixelU + pixelV);
     }
 

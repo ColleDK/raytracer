@@ -24,11 +24,15 @@ int main() {
     world.add(make_shared<Sphere>(Vec3( 1.0,    0.0, -1.0),   0.5, materialRight));
 
     Camera camera;
-
     camera.aspectRatio = 16.0 / 9.0;
     camera.imageWidth = 400;
     camera.samplesPerPixel = 30;
     camera.maxDepth = 10;
+
+    camera.fov = 90;
+    camera.position = {-2, 2, 1};
+    camera.lookAt = {0, 0, -1};
+    camera.upVector = {0, 1, 0};
 
     camera.render(world);
     return 0;
