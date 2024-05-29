@@ -141,4 +141,11 @@ inline Vec3 reflect(const Vec3& v, const Vec3& n) {
     return v - 2 * dotProduct(v, n) * n;
 }
 
+inline Vec3 refract(const Vec3& v, const Vec3& n, const double eta) {
+    const auto cosTheta = fmin(dotProduct(-v, n), 1.0);
+    const Vec3 rPerp = eta * (v + cosTheta * n);
+    const Vec3 rParallel = -sqrt(fabs(1.0 - rPerp.lengthSquared())) * n;
+    return rPerp + rParallel;
+}
+
 #endif //VEC3_H
