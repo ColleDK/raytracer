@@ -2,10 +2,12 @@
 #define HITTABLE_H
 #include "common.h"
 
+class Material;
 class HitRecord {
 public:
     Vec3 point{};
     Vec3 normal{};
+    shared_ptr<Material> material;
     double t{};
     bool isFrontFace{};
 

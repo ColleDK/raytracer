@@ -13,4 +13,7 @@ add_executable(raytracer main.cpp vec3.h
         hittablelist.h
         common.h
         interval.h
-        camera.h)
+        camera.h
+        materials/material.h
+        materials/lambertian.h
+        materials/metal.h)

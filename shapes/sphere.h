@@ -1,6 +1,8 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
+#include <utility>
+
 #include "../common.h"
 #include "../hittable.h"
 
@@ -8,7 +10,7 @@ class Sphere: public Hittable {
 public:
     // Constructors
     Sphere(): centerPos({}), r(0.0) {}
-    Sphere(const Vec3& center, const double radius): centerPos(center), r(radius) {}
+    Sphere(const Vec3& center, const double radius, shared_ptr<Material> material): centerPos(center), r(fmax(0, radius)), material(std::move(material)) {}
 
     // Hittable functions
     bool hasHit(const Ray &ray, Interval tInterval, HitRecord &record) const override {
@@ -36,6 +38,7 @@ public:
         record.t = root;
         record.point = ray.at(root);
         record.setNormal(ray, (record.point - center()) / radius());
+        record.material = material;
         return true;
     }
 
@@ -46,6 +49,7 @@ public:
 private:
     Vec3 centerPos;
     double r;
+    shared_ptr<Material> material;
 };
 
 #endif //SPHERE_H

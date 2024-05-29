@@ -55,6 +55,11 @@ public:
         return x() * x() + y() * y() + z() * z();
     }
 
+    [[nodiscard]] bool nearZero() const {
+        constexpr auto s = 1e-8;
+        return fabs(x()) < s && fabs(y()) < s && fabs(z()) < s;
+    }
+
     static Vec3 random() {
         return {randomDouble(), randomDouble(), randomDouble()};
     }
@@ -130,6 +135,10 @@ inline Vec3 randomOnHemisphere(const Vec3& normal) {
         return onUnitSphere;
     }
     return -onUnitSphere;
+}
+
+inline Vec3 reflect(const Vec3& v, const Vec3& n) {
+    return v - 2 * dotProduct(v, n) * n;
 }
 
 #endif //VEC3_H

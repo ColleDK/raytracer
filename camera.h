@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "hittable.h"
+#include "materials/material.h"
 
 class Camera {
 
@@ -83,8 +84,12 @@ private:
 
         HitRecord record{};
         if (world.hasHit(ray, Interval(0.001, infinity), record)) {
-            auto direction = record.normal + randomUnitVector();
-            return 0.5 * rayColor({record.point, direction}, depth - 1, world);
+            Ray scattered;
+            Color attenuation;
+            if (record.material->scatter(ray, record, attenuation, scattered)) {
+                return attenuation * rayColor(scattered, depth-1, world);
+            }
+            return black;
         }
 
         const auto unitDirection = unitVector(ray.direction());
